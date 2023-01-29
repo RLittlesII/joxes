@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31611.283
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blazor", "src\Blazor\Blazor.csproj", "{047571C6-C848-4BD1-928E-0DAC7284CD24}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".deploy", ".deploy", "{A8D157AF-BE0A-424D-8ECE-EF5843A298FA}"
+	ProjectSection(SolutionItems) = preProject
+		Dockerfile = Dockerfile
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Maui", "src\Maui\Maui.csproj", "{3C7803DB-B476-4D04-A03C-0DD2061F6F8A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{047571C6-C848-4BD1-928E-0DAC7284CD24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{047571C6-C848-4BD1-928E-0DAC7284CD24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{047571C6-C848-4BD1-928E-0DAC7284CD24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{047571C6-C848-4BD1-928E-0DAC7284CD24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C7803DB-B476-4D04-A03C-0DD2061F6F8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C7803DB-B476-4D04-A03C-0DD2061F6F8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C7803DB-B476-4D04-A03C-0DD2061F6F8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C7803DB-B476-4D04-A03C-0DD2061F6F8A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {61F7FB11-1E47-470C-91E2-47F8143E1572}
+	EndGlobalSection
+EndGlobal
