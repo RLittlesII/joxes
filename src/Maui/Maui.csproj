@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFrameworks>net7.0-ios;net7.0-maccatalyst</TargetFrameworks>
@@ -85,6 +85,7 @@
     <ItemGroup>
       <PackageReference Include="ReactiveMarbles.Mvvm" Version="1.0.46" />
       <PackageReference Include="ReactiveUI.Maui" Version="18.4.1" />
+      <PackageReference Include="Rocket.Surgery.Airframe.Microsoft.Extensions.DependencyInjection" Version="0.10.1" />
       <PackageReference Include="Shiny" Version="3.0.0-alpha-0002" />
       <PackageReference Include="Shiny.Hosting.Maui" Version="3.0.0-alpha-0495" />
     </ItemGroup>

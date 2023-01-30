@@ -1,13 +1,17 @@
-﻿namespace Joxes.Maui;
+﻿using ReactiveUI;
 
-public partial class MainPage : ContentPage
+namespace Joxes.Maui;
+
+public partial class MainPage
 {
     int count = 0;
 
     public MainPage(MainViewModel mainViewModel)
     {
         InitializeComponent();
-        BindingContext = mainViewModel;
+        ViewModel = mainViewModel;
+
+        this.WhenActivated(disposables => { });
     }
 
     private void OnCounterClicked(object sender, EventArgs e)

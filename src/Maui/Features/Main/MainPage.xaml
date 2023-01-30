@@ -1,7 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Joxes.Maui.MainPage">
+<features:ContentPageBase x:TypeArguments="maui:MainViewModel" xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                          xmlns:features="clr-namespace:Joxes.Maui.Features"
+                          xmlns:maui="clr-namespace:Joxes.Maui"
+                          x:Class="Joxes.Maui.MainPage">
 
     <ScrollView>
         <VerticalStackLayout
@@ -38,4 +40,4 @@
         </VerticalStackLayout>
     </ScrollView>
 
-</ContentPage>
+</features:ContentPageBase>

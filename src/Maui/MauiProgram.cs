@@ -1,7 +1,5 @@
-﻿using System.Reactive.Concurrency;
-using ReactiveMarbles.Mvvm;
+﻿using ReactiveMarbles.Mvvm;
 using ReactiveUI;
-using Shiny.Infrastructure;
 
 namespace Joxes.Maui;
 
@@ -15,7 +13,7 @@ public static class MauiProgram
             .UseMauiApp<App>()
             .UseShiny(collection => collection.AddConnectivity())
             .UseServices(collection => collection
-                                       .AddExceptionHandler(provider => new GlobalReactiveExceptionHandler())
+                                       .AddGlobalExceptionHandler<GlobalReactiveExceptionHandler>()
                                        .AddCoreRegistration(provider =>
                                                                 CoreRegistrationBuilder
                                                                     .Create()
@@ -41,7 +39,7 @@ public static class MarblesExtensions
     public static MauiAppBuilder UseShiny(this MauiAppBuilder builder, Action<IServiceCollection> configuration)
     {
         builder.UseShiny();
-        configuration.Invoke(builder.Services.AddShinyCoreServices());
+        configuration.Invoke(builder.Services);
         return builder;
     }
 
@@ -51,12 +49,14 @@ public static class MarblesExtensions
         return builder;
     }
 
-    public static IServiceCollection AddExceptionHandler(
+    public static IServiceCollection AddGlobalExceptionHandler(
         this IServiceCollection services,
-        Func<IServiceProvider, IObserver<Exception>> implementationFactory)
-    {
-        return services.AddSingleton(typeof(IObserver<Exception>), implementationFactory);
-    }
+        Func<IServiceProvider, IObserver<Exception>> implementationFactory) =>
+        services.AddSingleton(typeof(IObserver<Exception>), implementationFactory);
+
+    public static IServiceCollection AddGlobalExceptionHandler<THandler>(this IServiceCollection services)
+        where THandler : IObserver<Exception> =>
+        services.AddSingleton(typeof(IObserver<Exception>), typeof(THandler));
 
     public static IServiceCollection AddCoreRegistration(
         this IServiceCollection services,
@@ -68,8 +68,9 @@ public static class MarblesExtensions
     public static IServiceCollection AddNavigation<TPage, TViewModel>(this IServiceCollection serviceCollection)
         where TViewModel : class
         where TPage : class =>
-        serviceCollection.AddTransient<TPage>()
-                         .AddTransient<TViewModel>();
+        serviceCollection
+            .AddTransient<TPage>()
+            .AddTransient<TViewModel>();
 }
 
 public class GlobalReactiveExceptionHandler : IObserver<Exception>
