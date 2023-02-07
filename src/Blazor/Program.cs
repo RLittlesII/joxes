@@ -1,11 +1,22 @@
-using Blazor.Data;
+using Joxes.Blazor.Data;
+using Joxes.Blazor.Pages.Chuck;
+using MudBlazor.Services;
+using Refit;
+using Rocket.Surgery.Airframe.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddSignalR();
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddSingleton<WeatherForecastService>();
+builder.Services.AddMudServices();
+builder.Services
+       .AddSingleton<WeatherForecastService>()
+       .AddSingleton<IChuckNorrisJokeApiClient>(provider => RestService.For<IChuckNorrisJokeApiClient>("https://api.chucknorris.io/"))
+       .AddSingleton<IChuckNorrisJokeService, ChuckNorrisJokeService>()
+       .AddSingleton<IChuckNorrisJokes, ChuckNorrisJokes>()
+       .AddTransient<ChuckNorrisViewModel>();
 
 var app = builder.Build();
 

@@ -1,0 +1,30 @@
+@inherits ReactiveUI.Blazor.ReactiveComponentBase<ChuckNorrisViewModel>
+@inject ChuckNorrisViewModel _viewModel
+@page "/Chuck/ChuckNorris"
+<h3>ChuckNorris</h3>
+
+<div class="row">
+    @if (ViewModel?.Categories?.Any() ?? false)
+    {
+        @foreach (var category in ViewModel.Categories)
+        {
+            <div class="align-content-center">
+                <MudToggleIconButton
+                    @bind-Toggled="@category.Excluded"
+                    Title="@category.Category"
+                    Icon="@Icons.Material.Filled.Key"
+                    Color="@Color.Info"
+                    ToggledColor="@Color.Error"
+                    ToggledIcon="@Icons.Material.Filled.Cancel"
+                    ToggledTitle="@category.Category"/>
+                <Span>
+                    @category.Category: @(category.Excluded
+                                                       ? "Excluded"
+                                                       : "")
+                </Span>
+            </div>
+        }
+    }
+
+    <MudButton @onclick="Send">Send a Laugh</MudButton>
+</div>

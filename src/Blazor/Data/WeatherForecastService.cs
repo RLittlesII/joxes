@@ -1,4 +1,4 @@
-namespace Blazor.Data;
+namespace Joxes.Blazor.Data;
 
 public class WeatherForecastService
 {
