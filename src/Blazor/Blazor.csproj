@@ -7,4 +7,15 @@
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="MudBlazor" Version="6.1.8" />
+      <PackageReference Include="ReactiveUI.Blazor" Version="18.4.1" />
+      <PackageReference Include="Rocket.Surgery.Airframe.Data" Version="0.10.1" />
+      <PackageReference Include="Refit" Version="6.3.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Joxes\Joxes.csproj" />
+    </ItemGroup>
+
 </Project>

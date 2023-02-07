@@ -1,11 +1,18 @@
 using Blazor.Data;
+using Blazor.Pages;
+using Refit;
+using Rocket.Surgery.Airframe.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddSingleton<WeatherForecastService>();
+builder.Services
+       .AddSingleton<WeatherForecastService>()
+       .AddSingleton<IChuckNorrisJokeApiClient>(provider => RestService.For<IChuckNorrisJokeApiClient>("https://api.chucknorris.io/"))
+       .AddSingleton<IChuckNorrisJokeService, ChuckNorrisJokeService>()
+       .AddSingleton<IChuckNorrisJokes, ChuckNorrisJokes>();
 
 var app = builder.Build();
 
