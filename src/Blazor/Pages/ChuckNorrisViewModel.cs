@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Reactive.Linq;
 using DynamicData;
 using Joxes;
@@ -13,10 +14,9 @@ public class ChuckNorrisViewModel : ReactiveObject
     {
         chuckNorrisJokes
             .Categories()
-            .Bind(out var categories)
-            .Subscribe();
-
-        Categories = categories;
+            .Do(_ => { })
+            .ToCollection()
+            .BindTo(this, x => x.Categories);
     }
 
     public Category Category
@@ -25,9 +25,14 @@ public class ChuckNorrisViewModel : ReactiveObject
         set => this.RaiseAndSetIfChanged(ref _category, value);
     }
 
-    public ReadOnlyObservableCollection<Category> Categories { get; }
+    public IEnumerable<Category> Categories
+    {
+        get => _categories;
+        set => this.RaiseAndSetIfChanged(ref _categories, value);
+    }
 
     private Category _category;
+    private IEnumerable<Category> _categories;
 }
 
 public interface IChuckNorrisJokes : IChuckNorrisJokeService

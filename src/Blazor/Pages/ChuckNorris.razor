@@ -1,6 +1,18 @@
+@inherits ReactiveUI.Blazor.ReactiveComponentBase<ChuckNorrisViewModel>
+@inject ChuckNorrisViewModel _viewModel
 @page "/ChuckNorris"
 <h3>ChuckNorris</h3>
 
-@code {
-    
-}
+<div class="row">
+    @if (ViewModel?.Categories?.Any() ?? false)
+    {
+        <MudButtonGroup Color="Color.Primary" Variant="Variant.Filled" VerticalAlign="true">
+
+            @foreach (var category in ViewModel.Categories)
+            {
+                <MudButton>@category.Value</MudButton>
+            }
+            <MudButton>None</MudButton>
+        </MudButtonGroup>
+    }
+</div>
