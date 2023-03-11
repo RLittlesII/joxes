@@ -11,14 +11,14 @@
             <div class="align-content-center">
                 <MudToggleIconButton
                     @bind-Toggled="@category.Excluded"
-                    Title="@category.Category"
+                    Title="@category.Category.Value"
                     Icon="@Icons.Material.Filled.Key"
                     Color="@Color.Info"
                     ToggledColor="@Color.Error"
                     ToggledIcon="@Icons.Material.Filled.Cancel"
-                    ToggledTitle="@category.Category"/>
+                    ToggledTitle="@category.Category.Value"/>
                 <Span>
-                    @category.Category: @(category.Excluded
+                    @category.Category.Value: @(category.Excluded
                                                        ? "Excluded"
                                                        : "")
                 </Span>

@@ -6,10 +6,10 @@ public class CategorySelection : ReactiveObject
 {
     public CategorySelection(Category category)
     {
-        Category = category.Value;
+        Category = category;
     }
 
-    public string Category { get; }
+    public Category Category { get; }
 
     public bool Excluded
     {

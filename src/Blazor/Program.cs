@@ -1,3 +1,4 @@
+using Joxes;
 using Joxes.Blazor.Data;
 using Joxes.Blazor.Pages.Chuck;
 using MudBlazor.Services;
@@ -17,6 +18,8 @@ builder.Services
        .AddSingleton<IChuckNorrisJokeService, ChuckNorrisJokeService>()
        .AddSingleton<IChuckNorrisJokes, ChuckNorrisJokes>()
        .AddTransient<ChuckNorrisViewModel>()
+       .AddTransient<UserId>()
+       .AddTransient<IJsonSerializer, Serializer>()
        .AddHttpClient("Functions", client => client.BaseAddress = new Uri(" http://localhost:7071/api"));
 
 var app = builder.Build();

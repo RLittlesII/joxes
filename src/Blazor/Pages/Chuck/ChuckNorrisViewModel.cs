@@ -1,4 +1,6 @@
 using System.Reactive;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using DynamicData;
 using ReactiveUI;
 
@@ -6,25 +8,35 @@ namespace Joxes.Blazor.Pages.Chuck;
 
 public class ChuckNorrisViewModel : ReactiveObject
 {
-    public ChuckNorrisViewModel(IChuckNorrisJokes chuckNorrisJokes, IHttpClientFactory httpClientFactory)
+    public ChuckNorrisViewModel(IChuckNorrisJokes chuckNorrisJokes, IHttpClientFactory httpClientFactory, IJsonSerializer jsonSerializer, UserId userId)
     {
+        UserId = userId;
+
+        Send = ReactiveCommand.CreateFromTask<Unit, HttpResponseMessage>(_ =>
+        {
+            var jokeRequest = new JokeRequest(UserId,
+                                              Categories.Where(x => !x.Excluded)
+                                                        .Select(x => x.Category));
+            var serialize = jsonSerializer.Serialize(jokeRequest);
+            return httpClientFactory
+                   .CreateClient("Functions")
+                   .PostAsync("api/DeliveryFunction",
+                              new StringContent(serialize),
+                              CancellationToken.None);
+        });
+
+        Send
+            .Subscribe(_ => { });
+
         chuckNorrisJokes
             .Categories()
             .Transform(x => new CategorySelection(x))
             .AutoRefresh(x => x.Excluded)
             .ToCollection()
             .BindTo(this, x => x.Categories);
-
-        Send = ReactiveCommand.CreateFromTask<Unit, HttpResponseMessage>(_ =>
-                                                                             httpClientFactory
-                                                                                 .CreateClient("Functions")
-                                                                                 .PostAsync("api/DeliveryFunction",
-                                                                                     null,
-                                                                                     CancellationToken.None));
-
-        Send
-            .Subscribe(_ => { });
     }
+
+    public UserId UserId { get; }
 
     public ReactiveCommand<Unit, HttpResponseMessage> Send { get; }
 
