@@ -5,15 +5,19 @@ using Microsoft.Extensions.Logging;
 
 namespace Punchline;
 
-public class PunchlineFunctions
+public class DeliveryFunction
 {
-    [Function(nameof(Deliver))]
-    public HttpResponseData Deliver([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequestData req,
-                                       FunctionContext executionContext)
-    {
-        var logger = executionContext.GetLogger("Deliver");
-        logger.LogInformation("C# HTTP trigger function processed a request.");
+    private readonly ILogger _logger;
 
+    public DeliveryFunction(ILoggerFactory logger) => _logger = logger.CreateLogger<DeliveryFunction>();
+
+    [Function(nameof(DeliveryFunction))]
+    public static HttpResponseData Run(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData req,
+        FunctionContext executionContext)
+    {
+        var logger = executionContext.GetLogger("PunchlineFunctions");
+        logger.LogInformation("C# HTTP trigger function processed a request.");
         var response = req.CreateResponse(HttpStatusCode.OK);
         response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
 
