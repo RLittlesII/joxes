@@ -14,8 +14,8 @@ public partial class ChuckNorris
     protected override void OnInitialized() => ViewModel = _viewModel;
 
     private Task Send() =>
-        ViewModel
-            .Send
-            .Execute()
-            .ToTask();
+        InvokeAsync(() => ViewModel
+                          .Send
+                          .Execute()
+                          .ToTask());
 }

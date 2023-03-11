@@ -16,7 +16,8 @@ builder.Services
        .AddSingleton<IChuckNorrisJokeApiClient>(provider => RestService.For<IChuckNorrisJokeApiClient>("https://api.chucknorris.io/"))
        .AddSingleton<IChuckNorrisJokeService, ChuckNorrisJokeService>()
        .AddSingleton<IChuckNorrisJokes, ChuckNorrisJokes>()
-       .AddTransient<ChuckNorrisViewModel>();
+       .AddTransient<ChuckNorrisViewModel>()
+       .AddHttpClient("Functions", client => client.BaseAddress = new Uri(" http://localhost:7071/api"));
 
 var app = builder.Build();
 

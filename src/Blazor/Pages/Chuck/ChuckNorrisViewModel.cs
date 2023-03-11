@@ -6,7 +6,7 @@ namespace Joxes.Blazor.Pages.Chuck;
 
 public class ChuckNorrisViewModel : ReactiveObject
 {
-    public ChuckNorrisViewModel(IChuckNorrisJokes chuckNorrisJokes)
+    public ChuckNorrisViewModel(IChuckNorrisJokes chuckNorrisJokes, IHttpClientFactory httpClientFactory)
     {
         chuckNorrisJokes
             .Categories()
@@ -15,10 +15,18 @@ public class ChuckNorrisViewModel : ReactiveObject
             .ToCollection()
             .BindTo(this, x => x.Categories);
 
-        Send = ReactiveCommand.CreateFromTask(_ => Task.CompletedTask);
+        Send = ReactiveCommand.CreateFromTask<Unit, HttpResponseMessage>(_ =>
+                                                                             httpClientFactory
+                                                                                 .CreateClient("Functions")
+                                                                                 .PostAsync("api/DeliveryFunction",
+                                                                                     null,
+                                                                                     CancellationToken.None));
+
+        Send
+            .Subscribe(_ => { });
     }
 
-    public ReactiveCommand<Unit, Unit> Send { get; }
+    public ReactiveCommand<Unit, HttpResponseMessage> Send { get; }
 
     public IEnumerable<CategorySelection> Categories
     {
