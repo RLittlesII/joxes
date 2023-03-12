@@ -1,29 +1,16 @@
 using System.Reactive;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using DynamicData;
+using Joxes.Delivery;
 using ReactiveUI;
 
 namespace Joxes.Blazor.Pages.Chuck;
 
 public class ChuckNorrisViewModel : ReactiveObject
 {
-    public ChuckNorrisViewModel(IChuckNorrisJokes chuckNorrisJokes, IHttpClientFactory httpClientFactory, IJsonSerializer jsonSerializer, UserId userId)
+    public ChuckNorrisViewModel(IChuckNorrisJokes chuckNorrisJokes, IPunchlines punchlines)
     {
-        UserId = userId;
-
-        Send = ReactiveCommand.CreateFromTask<Unit, HttpResponseMessage>(_ =>
-        {
-            var jokeRequest = new JokeRequest(UserId,
-                                              Categories.Where(x => !x.Excluded)
-                                                        .Select(x => x.Category));
-            var serialize = jsonSerializer.Serialize(jokeRequest);
-            return httpClientFactory
-                   .CreateClient("Functions")
-                   .PostAsync("api/DeliveryFunction",
-                              new StringContent(serialize),
-                              CancellationToken.None);
-        });
+        Send = ReactiveCommand.CreateFromObservable(() => punchlines.Deliver(new Categories(Categories.Where(x => !x.Excluded)
+                                                              .Select(x => x.Category))));
 
         Send
             .Subscribe(_ => { });
@@ -38,7 +25,7 @@ public class ChuckNorrisViewModel : ReactiveObject
 
     public UserId UserId { get; }
 
-    public ReactiveCommand<Unit, HttpResponseMessage> Send { get; }
+    public ReactiveCommand<Unit, Unit> Send { get; }
 
     public IEnumerable<CategorySelection> Categories
     {

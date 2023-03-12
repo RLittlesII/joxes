@@ -1,6 +1,7 @@
 using Joxes;
 using Joxes.Blazor.Data;
 using Joxes.Blazor.Pages.Chuck;
+using Joxes.Delivery;
 using MudBlazor.Services;
 using Refit;
 using Rocket.Surgery.Airframe.Data;
@@ -20,6 +21,7 @@ builder.Services
        .AddTransient<ChuckNorrisViewModel>()
        .AddTransient<UserId>()
        .AddTransient<IJsonSerializer, Serializer>()
+       .AddTransient<IPunchlines, Punchlines>()
        .AddHttpClient("Functions", client => client.BaseAddress = new Uri(" http://localhost:7071/api"));
 
 var app = builder.Build();
