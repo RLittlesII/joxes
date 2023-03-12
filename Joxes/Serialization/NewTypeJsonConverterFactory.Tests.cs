@@ -2,7 +2,7 @@ using FluentAssertions;
 using Rocket.Surgery.Extensions.Testing.Fixtures;
 using Xunit;
 
-namespace Joxes;
+namespace Joxes.Serialization;
 
 public class NewTypeJsonConverterFactoryTests
 {

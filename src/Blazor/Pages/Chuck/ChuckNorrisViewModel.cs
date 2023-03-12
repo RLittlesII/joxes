@@ -9,16 +9,18 @@ public class ChuckNorrisViewModel : ReactiveObject
 {
     public ChuckNorrisViewModel(IChuckNorrisJokes chuckNorrisJokes, IPunchlines punchlines)
     {
-        Send = ReactiveCommand.CreateFromObservable(() => punchlines.Deliver(new Categories(Categories.Where(x => !x.Excluded)
-                                                              .Select(x => x.Category))));
+        Send = ReactiveCommand.CreateFromObservable(() => punchlines.Deliver(
+                                                        new Categories(Categories.Where(x => !x.Excluded)
+                                                                           .Select(x => x.Category))));
 
         Send
             .Subscribe(_ => { });
 
         chuckNorrisJokes
             .Categories()
+            .Filter(category => !Excluded.Contains(category.Value))
             .Transform(x => new CategorySelection(x))
-            .AutoRefresh(x => x.Excluded)
+            .AutoRefresh(categorySelection => categorySelection.Excluded)
             .ToCollection()
             .BindTo(this, x => x.Categories);
     }
@@ -34,4 +36,10 @@ public class ChuckNorrisViewModel : ReactiveObject
     }
 
     private IEnumerable<CategorySelection> _categories;
+
+    private static readonly IReadOnlyList<string> Excluded = Enum.GetValues<IgnoreType>()
+                                                                 .Select(x => x.ToString()
+                                                                               .ToLowerInvariant())
+                                                                 .ToList()
+                                                                 .AsReadOnly();
 }

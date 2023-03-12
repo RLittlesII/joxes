@@ -1,3 +1,3 @@
-namespace Joxes;
+namespace Joxes.Serialization;
 
 public class Serializer : IJsonSerializer { }

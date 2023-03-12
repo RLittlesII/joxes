@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 using LanguageExt;
 using LanguageExt.TypeClasses;
 
-namespace Joxes;
+namespace Joxes.Serialization;
 
 public class NewTypeJsonConverterFactory : JsonConverterFactory
 {

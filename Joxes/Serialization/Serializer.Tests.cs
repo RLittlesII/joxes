@@ -1,7 +1,7 @@
 using FluentAssertions;
 using Xunit;
 
-namespace Joxes;
+namespace Joxes.Serialization;
 
 public class SerializerTests
 {

@@ -1,11 +1,12 @@
 using System.Net;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using System.Reactive.Threading.Tasks;
 using Joxes;
+using Joxes.Serialization;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Rocket.Surgery.Airframe.Data;
 
 namespace Punchline;
 
@@ -27,16 +28,41 @@ public class DeliveryFunction
 
         logger.LogInformation(requestAsString);
 
-        var requestBody = executionContext
-                          .InstanceServices
-                          .GetService<IJsonSerializer>()
-                          .Deserialize<JokeRequest>(requestAsString);
+        var serializer = executionContext
+                         .InstanceServices
+                         .GetService<IJsonSerializer>()!;
+
+        var requestBody = serializer.Deserialize<JokeRequest>(requestAsString);
+
+        if (requestBody == null)
+        {
+            return req.CreateResponse(HttpStatusCode.UnprocessableEntity);
+        }
+
+        var category =
+            requestBody
+                .Categories
+                .OrderBy(_ => _random.Next())
+                .ToArray()[0]
+                .Value;
+
+        logger.LogInformation(category);
+        var jokeResult =
+            await executionContext
+                  .InstanceServices
+                  .GetService<IChuckNorrisApiContract>()
+                  .RandomFromCategory(category);
+
+        // TODO: [rlittlesii: March 11, 2023] send SignalR signal
+        var jokeResponse = new JokeResponse(requestBody.Id, requestBody.UserId, jokeResult, DateTimeOffset.UtcNow);
 
         var response = req.CreateResponse(HttpStatusCode.OK);
         response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
 
-        await response.WriteStringAsync("Welcome to Azure Functions!");
+        await response.WriteStringAsync(serializer.Serialize(jokeResponse));
 
         return response;
     }
+
+    private readonly static Random _random = new Random();
 }

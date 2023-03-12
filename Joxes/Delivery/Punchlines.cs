@@ -1,5 +1,7 @@
 using System.Reactive;
 using System.Reactive.Linq;
+using DynamicData;
+using Joxes.Serialization;
 
 namespace Joxes.Delivery;
 
@@ -11,6 +13,8 @@ public class Punchlines : IPunchlines
         _userId = userId;
         _httpClient = httpClientFactory
             .CreateClient("Functions");
+
+        _responseCache = new SourceCache<JokeResponse, CorrelationId>(x => x.Id);
     }
 
     /// <inheritdoc />
@@ -21,6 +25,18 @@ public class Punchlines : IPunchlines
                                              .PostAsync("api/DeliveryFunction",
                                                         new StringContent(serialize),
                                                         token))
+                         // HACK: [rlittlesii: March 11, 2023] This is ugly
+                         .Select(_ =>
+                         {
+                             if (!_.IsSuccessStatusCode)
+                             {
+                                 Observable.Empty<JokeResponse>();
+                             }
+                             return _jsonSerializer.Deserialize<JokeResponse>(_.Content.ReadAsStringAsync()
+                                                                               .GetAwaiter()
+                                                                               .GetResult());
+                         })
+                         .Do(response => _responseCache.AddOrUpdate(response))
                          // TODO: [rlittlesii: March 11, 2023] I should likely handle the exceptions from the api.
                          .Select(_ => Unit.Default);
     }
@@ -28,6 +44,7 @@ public class Punchlines : IPunchlines
     private readonly IJsonSerializer _jsonSerializer;
     private readonly UserId _userId;
     private readonly HttpClient _httpClient;
+    private readonly SourceCache<JokeResponse, CorrelationId> _responseCache;
 }
 
 public interface IPunchlines
