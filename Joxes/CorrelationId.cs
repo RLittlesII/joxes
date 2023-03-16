@@ -5,15 +5,15 @@ using LanguageExt.ClassInstances.Pred;
 
 namespace Joxes;
 
-public class UserId : NewType<UserId, string, StrLen<I1, I50>>
+public class CorrelationId : NewType<CorrelationId, string, StrLen<I1, I50>>
 {
-    public UserId()
+    public CorrelationId()
         : this(Guid.NewGuid()
                    .ToString()) { }
 
-    public UserId(string value)
+    public CorrelationId(string value)
         : base(value) { }
 
-    public UserId(SerializationInfo info, StreamingContext context)
+    public CorrelationId(SerializationInfo info, StreamingContext context)
         : base(info, context) { }
 }

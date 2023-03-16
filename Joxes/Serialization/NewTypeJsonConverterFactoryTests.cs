@@ -1,5 +1,4 @@
 using FluentAssertions;
-using Rocket.Surgery.Extensions.Testing.Fixtures;
 using Xunit;
 
 namespace Joxes.Serialization;
@@ -20,11 +19,4 @@ public class NewTypeJsonConverterFactoryTests
             .Should()
             .NotBeNull();
     }
-}
-
-internal sealed class SerializerFixture : ITestFixtureBuilder
-{
-    public static implicit operator Serializer(SerializerFixture fixture) => fixture.Build();
-    public IJsonSerializer AsInterface() => Build();
-    private Serializer Build() => new Serializer();
 }
