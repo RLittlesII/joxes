@@ -6,14 +6,14 @@ namespace Punchline;
 public interface IChuckNorrisApiContract
 {
     [Get("/jokes/random")]
-    Task<NorrisJoke> Random();
+    Task<NorrisJokeDto> Random();
 
     [Get("/jokes/random?category={category}")]
-    Task<NorrisJoke> RandomFromCategory(string category);
+    Task<NorrisJokeDto> RandomFromCategory(string category);
 
     [Get("/jokes/categories")]
     Task<IEnumerable<string>> Categories();
 
     [Get("/jokes/search?query={query}")]
-    Task<IEnumerable<NorrisJoke>> Search(string query);
+    Task<IEnumerable<NorrisJokeDto>> Search(string query);
 }

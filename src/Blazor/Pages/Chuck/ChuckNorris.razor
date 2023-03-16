@@ -3,8 +3,10 @@
 @page "/Chuck/ChuckNorris"
 <h3>ChuckNorris</h3>
 
+<h6>UserId: @_viewModel?.UserId.Value</h6>
+
 <div class="row">
-    @if (ViewModel?.Categories?.Any() ?? false)
+    @if (ViewModel?.Categories.Any() ?? false)
     {
         @foreach (var category in ViewModel.Categories)
         {
@@ -19,12 +21,26 @@
                     ToggledTitle="@category.Category.Value"/>
                 <Span>
                     @category.Category.Value: @(category.Excluded
-                                                       ? "Excluded"
-                                                       : "")
+                                                    ? "Excluded"
+                                                    : "")
                 </Span>
             </div>
         }
     }
-
-    <MudButton @onclick="Send">Send a Laugh</MudButton>
 </div>
+<div class="row">
+    @if (ViewModel?.Jokes.Any() ?? false)
+    {
+        @foreach (var jokeViewModel in ViewModel.Jokes)
+        {
+            <MudCard>
+                <MudCardContent>
+                    <MudText Typo="Typo.h6">@jokeViewModel.Punchline</MudText>
+                    <MudText Typo="Typo.body2">@jokeViewModel.Category</MudText>
+                </MudCardContent>
+            </MudCard>
+        }
+    }
+</div>
+
+<MudButton @onclick="Send">Send a Laugh</MudButton>

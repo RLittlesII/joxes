@@ -4,7 +4,6 @@ using Joxes.Blazor.Data;
 using Joxes.Blazor.Pages.Chuck;
 using Joxes.Delivery;
 using Joxes.Serialization;
-using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Azure.SignalR;
 using MudBlazor.Services;
 using Refit;
@@ -26,7 +25,7 @@ builder.Services.AddMudServices();
 builder.Services
        .AddSingleton<WeatherForecastService>()
        .AddSingleton<IChuckNorrisJokeApiClient>(
-           provider => RestService.For<IChuckNorrisJokeApiClient>("https://api.chucknorris.io/"))
+           _ => RestService.For<IChuckNorrisJokeApiClient>("https://api.chucknorris.io/"))
        .AddSingleton<IChuckNorrisJokeService, ChuckNorrisJokeService>()
        .AddSingleton<IChuckNorrisJokes, ChuckNorrisJokes>()
        .AddTransient<ChuckNorrisViewModel>()

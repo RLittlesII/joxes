@@ -19,6 +19,9 @@ public class Punchlines : IPunchlines
             .CreateClient("Functions");
 
         _responseCache = new SourceCache<JokeResponse, CorrelationId>(x => x.Id);
+        _responses = _responseCache
+                     .Connect()
+                     .RefCount();
     }
 
     /// <inheritdoc />
@@ -48,14 +51,19 @@ public class Punchlines : IPunchlines
                          .SelectMany(jokeResponse => _jokeBroadcast.Broadcast(jokeResponse));
     }
 
+    public IDisposable Subscribe(IObserver<IChangeSet<JokeResponse, CorrelationId>> observer) =>
+        _responses
+            .Subscribe(observer);
+
     private readonly IJsonSerializer _jsonSerializer;
     private readonly IJokeBroadcast _jokeBroadcast;
     private readonly UserId _userId;
     private readonly HttpClient _httpClient;
     private readonly SourceCache<JokeResponse, CorrelationId> _responseCache;
+    private readonly IObservable<IChangeSet<JokeResponse, CorrelationId>> _responses;
 }
 
-public interface IPunchlines
+public interface IPunchlines : IObservable<IChangeSet<JokeResponse, CorrelationId>>
 {
     IObservable<Unit> Deliver(Categories categories);
 }

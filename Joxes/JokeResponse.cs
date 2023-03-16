@@ -4,11 +4,11 @@ namespace Joxes;
 
 public class JokeResponse : Record<JokeResponse>
 {
-    public JokeResponse(CorrelationId id, UserId userId, NorrisJoke joke, DateTimeOffset timestamp)
+    public JokeResponse(CorrelationId id, UserId userId, NorrisJokeDto jokeDto, DateTimeOffset timestamp)
     {
         Id = id;
         UserId = userId;
-        Joke = joke;
+        JokeDto = jokeDto;
         Timestamp = timestamp;
     }
 
@@ -16,7 +16,7 @@ public class JokeResponse : Record<JokeResponse>
 
     public UserId UserId;
 
-    public NorrisJoke Joke;
+    public NorrisJokeDto JokeDto;
 
     public DateTimeOffset Timestamp;
 }

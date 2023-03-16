@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace Joxes;
 
-public class NorrisJoke
+public class NorrisJokeDto
 {
     [JsonProperty("id")]
     public string Id { get; set; }
