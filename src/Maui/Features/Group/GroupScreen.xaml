@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:group="clr-namespace:Joxes.Maui.Features.Group"
+             xmlns:joxes="clr-namespace:Joxes;assembly=Joxes"
+             x:Class="Joxes.Maui.Features.Group.GroupScreen"
+             x:DataType="group:GroupViewModel">
+    <ContentPage.Content>
+        <ListView
+            ItemsSource="{Binding Jokes}"
+            VerticalScrollBarVisibility="Always"
+            IsGroupingEnabled="{Binding IsGroupable}">
+            <ListView.GroupHeaderTemplate>
+                <DataTemplate x:DataType="group:JokeAggregateViewModel">
+                    <ViewCell>
+                        <VerticalStackLayout>
+                            <Label Text="{Binding Id}" />
+                        </VerticalStackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.GroupHeaderTemplate>
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="joxes:Joke">
+                    <ViewCell>
+                        <VerticalStackLayout HeightRequest="256">
+                            <Label Text="{Binding Punchline}"
+                                   MaxLines="5" FontSize="22" HorizontalTextAlignment="Center" />
+                            <Label Text="{Binding Category}"
+                                   HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </ContentPage.Content>
+</ContentPage>

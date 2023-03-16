@@ -2,8 +2,27 @@
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Joxes.Maui.Features.Discriminator.DiscriminatorScreen">
+             xmlns:discriminator="clr-namespace:Joxes.Maui.Features.Discriminator"
+             xmlns:joxes="clr-namespace:Joxes;assembly=Joxes"
+             x:Class="Joxes.Maui.Features.Discriminator.DiscriminatorScreen"
+             x:DataType="discriminator:DiscriminatorViewModel">
     <ContentPage.Content>
-        
+        <VerticalStackLayout>
+            <Picker ItemsSource="{Binding Categories}"
+                    SelectedItem="{Binding SelectedCategory}"
+                    HorizontalTextAlignment="Center" />
+            <CollectionView ItemsSource="{Binding Jokes}" VerticalScrollBarVisibility="Always">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="joxes:Joke">
+                        <VerticalStackLayout Margin="16">
+                            <Label Text="{Binding .Punchline}"
+                                   MaxLines="5" FontSize="22" HorizontalTextAlignment="Center" />
+                            <Label Text="{Binding .Category}"
+                                   HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
     </ContentPage.Content>
 </ContentPage>

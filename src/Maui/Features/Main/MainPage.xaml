@@ -16,14 +16,8 @@
             VerticalOptions="Center">
 
             <Button
-                Text="Buffer"
-                SemanticProperties.Hint="Buffer the laughs"
-                Command="{Binding Navigate}"
-                CommandParameter="{x:Static maui:NavigationUri.Buffer}"
-                HorizontalOptions="Center" />
-
-            <Button
                 Text="Discriminate"
+                IsEnabled="True"
                 SemanticProperties.Hint="Discriminate the laughs"
                 Command="{Binding Navigate}"
                 CommandParameter="{x:Static maui:NavigationUri.Discriminator}"
@@ -31,9 +25,18 @@
 
             <Button
                 Text="Debounce"
+                IsEnabled="True"
                 SemanticProperties.Hint="Debounce the laughs"
                 Command="{Binding Navigate}"
                 CommandParameter="{x:Static maui:NavigationUri.Debounce}"
+                HorizontalOptions="Center" />
+
+            <Button
+                Text="Group"
+                IsEnabled="True"
+                SemanticProperties.Hint="Group the laughs"
+                Command="{Binding Navigate}"
+                CommandParameter="{x:Static maui:NavigationUri.Group}"
                 HorizontalOptions="Center" />
 
         </VerticalStackLayout>

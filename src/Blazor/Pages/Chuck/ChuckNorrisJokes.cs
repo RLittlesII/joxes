@@ -17,7 +17,7 @@ public class ChuckNorrisJokes : IChuckNorrisJokes
         jokes
             .Connect()
             .RefCount()
-            .Transform(joke => joke.Categories)
+            .Transform(joke => joke.Category)
             .ToCollection()
             .SelectMany(collection => collection.SelectMany(list => list))
             .ToObservableChangeSet(category => category.Value)

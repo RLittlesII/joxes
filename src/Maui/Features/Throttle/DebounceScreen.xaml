@@ -2,9 +2,24 @@
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:throttle="clr-namespace:Joxes.Maui.Features.Throttle"
+             xmlns:joxes="clr-namespace:Joxes;assembly=Joxes"
              x:Class="Joxes.Maui.Features.Throttle.DebounceScreen"
+             x:DataType="throttle:DebounceViewModel"
              NavigationPage.HasBackButton="True">
     <ContentPage.Content>
+        <VerticalStackLayout Margin="8, 16, 8, 32">
+            <CollectionView ItemsSource="{Binding Jokes}" VerticalScrollBarVisibility="Always">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="joxes:Joke">
+                        <VerticalStackLayout Margin="16">
+                            <Label Text="{Binding .Punchline}" MaxLines="5" FontSize="22" HorizontalTextAlignment="Center" />
+                            <Label Text="{Binding .Category}" HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
         
     </ContentPage.Content>
 </ContentPage>

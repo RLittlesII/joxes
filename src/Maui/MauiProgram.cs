@@ -1,10 +1,13 @@
 ﻿using DryIoc;
+using Joxes.Maui.Features;
 using Joxes.Maui.Modules;
+using Joxes.Serialization;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Logging;
 using Prism.DryIoc;
 using ReactiveMarbles.Mvvm;
 using ReactiveUI;
+using Refit;
 using Rocket.Surgery.Airframe.Microsoft.Extensions.DependencyInjection;
 using static Joxes.Maui.PrismNavigationExtensions;
 
@@ -23,9 +26,14 @@ public static class MauiProgram
                                                      services
                                                          .AddModule<PrismNavigationModule>()
                                                          .AddSingleton<IJokeReceiver, JokeReceiver>()
+                                                         .AddSingleton<IChuckNorrisApiContract>(
+                                                             _ => RestService.For<IChuckNorrisApiContract>("https://api.chucknorris.io/"))
+                                                         .AddSingleton<IChuckNorrisApiClient, ChuckNorrisApiClient>()
+                                                         .AddTransient<IChuckNorrisAggregator, ChuckNorrisAggregator>()
                                                          .AddSingleton<IHubConnectionBuilder>(
                                                              _ => new HubConnectionBuilder().WithUrl(
                                                                  "https://punchline.service.signalr.net/jokes"))
+                                                         .AddSingleton<IJsonSerializer, Serializer>()
                                                          .RegisterGlobalNavigationObserver()
                                                          .AddGlobalExceptionHandler<GlobalReactiveExceptionHandler>()
                                                          .AddCoreRegistration(provider =>

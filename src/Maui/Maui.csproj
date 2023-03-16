@@ -52,7 +52,7 @@
         <MauiXaml Update="Features\Discriminator\DiscriminatorScreen.xaml">
             <SubType>Designer</SubType>
         </MauiXaml>
-        <MauiXaml Update="Features\Buffer\BufferScreen.xaml">
+        <MauiXaml Update="Features\Buffer\GroupScreen.xaml">
             <SubType>Designer</SubType>
         </MauiXaml>
         <MauiXaml Update="Features\Throttle\DebounceScreen.xaml">
@@ -68,7 +68,7 @@
             <DependentUpon>DiscriminatorScreen.xaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
-        <Compile Update="Features\Buffer\BufferScreen.xaml.cs">
+        <Compile Update="Features\Buffer\GroupScreen.xaml.cs">
             <DependentUpon>DiscriminatorScreen.xaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
@@ -83,12 +83,14 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="DynamicData" Version="7.12.11" />
         <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="7.0.0" />
         <PackageReference Include="LanguageExt.Core" Version="4.4.0" />
         <PackageReference Include="Prism.Maui" Version="8.1.273-pre" />
         <PackageReference Include="Prism.Maui.Rx" Version="8.1.273-pre" />
         <PackageReference Include="Prism.DryIoc.Maui" Version="8.1.273-pre" />
         <PackageReference Include="ReactiveMarbles.Mvvm" Version="1.0.46" />
+        <PackageReference Include="ReactiveMarbles.PropertyChanged" Version="2.0.27" />
         <PackageReference Include="ReactiveUI.Maui" Version="18.4.1" />
         <PackageReference Include="Rocket.Surgery.Airframe.Core" Version="0.10.1" />
         <PackageReference Include="Rocket.Surgery.Airframe.Data" Version="0.10.1" />
