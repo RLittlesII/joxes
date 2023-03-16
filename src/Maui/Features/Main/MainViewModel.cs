@@ -1,10 +1,17 @@
+using System.Reactive;
 using ReactiveMarbles.Mvvm;
+using ReactiveUI;
 
-namespace Joxes.Maui;
+namespace Joxes.Maui.Features.Main;
 
-public class MainViewModel
+public class MainViewModel : ViewModelBase
 {
-    public MainViewModel(ICoreRegistration coreRegistration) { _coreRegistration = coreRegistration; }
+    public MainViewModel(INavigationService navigationService, ICoreRegistration coreRegistration)
+        : base(navigationService, coreRegistration)
+    {
+        Navigate = ReactiveCommand.CreateFromTask<string>(uri => NavigationService.NavigateAsync(uri)
+                                                                               .HandleResult());
+    }
 
-    private readonly ICoreRegistration _coreRegistration;
+    public ReactiveCommand<string, Unit> Navigate { get; }
 }

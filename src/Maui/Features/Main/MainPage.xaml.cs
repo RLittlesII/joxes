@@ -1,28 +1,15 @@
 ﻿using ReactiveUI;
 
-namespace Joxes.Maui;
+namespace Joxes.Maui.Features.Main;
 
 public partial class MainPage
 {
     int count = 0;
 
-    public MainPage(MainViewModel mainViewModel)
+    public MainPage()
     {
         InitializeComponent();
-        ViewModel = mainViewModel;
 
         this.WhenActivated(disposables => { });
-    }
-
-    private void OnCounterClicked(object sender, EventArgs e)
-    {
-        count++;
-
-        if (count == 1)
-            CounterBtn.Text = $"Clicked {count} time";
-        else
-            CounterBtn.Text = $"Clicked {count} times";
-
-        SemanticScreenReader.Announce(CounterBtn.Text);
     }
 }
