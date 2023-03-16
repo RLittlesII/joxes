@@ -1,46 +1,35 @@
 @inherits ReactiveUI.Blazor.ReactiveComponentBase<ChuckNorrisViewModel>
 @inject ChuckNorrisViewModel _viewModel
 @page "/Chuck/ChuckNorris"
-<h3>ChuckNorris</h3>
-
-<h6>UserId: @_viewModel?.UserId.Value</h6>
+<h3><b>UserId</b>: @_viewModel?.UserId.Value</h3>
 
 <div class="row">
     @if (ViewModel?.Categories.Any() ?? false)
     {
-        @foreach (var category in ViewModel.Categories)
-        {
-            <div class="align-content-center">
-                <MudToggleIconButton
-                    @bind-Toggled="@category.Excluded"
-                    Title="@category.Category.Value"
-                    Icon="@Icons.Material.Filled.Key"
-                    Color="@Color.Info"
-                    ToggledColor="@Color.Error"
-                    ToggledIcon="@Icons.Material.Filled.Cancel"
-                    ToggledTitle="@category.Category.Value"/>
-                <Span>
-                    @category.Category.Value: @(category.Excluded
-                                                    ? "Excluded"
-                                                    : "")
-                </Span>
-            </div>
-        }
+        <MudText Typo="Typo.h5" Align="Align.Center">Check to Exclude Category</MudText>
+        <MudStack Row="true" Justify="Justify.Center">
+            @foreach (var category in ViewModel.Categories)
+            {
+                <MudCheckBox @bind-Checked="@category.Excluded" Label="@category.Category.Value"/>
+            }
+        </MudStack>
     }
 </div>
 <div class="row">
     @if (ViewModel?.Jokes.Any() ?? false)
     {
-        @foreach (var jokeViewModel in ViewModel.Jokes)
-        {
-            <MudCard>
-                <MudCardContent>
-                    <MudText Typo="Typo.h6">@jokeViewModel.Punchline</MudText>
-                    <MudText Typo="Typo.body2">@jokeViewModel.Category</MudText>
-                </MudCardContent>
-            </MudCard>
-        }
+        <MudStack Justify="Justify.Center">
+            @foreach (var jokeViewModel in ViewModel.Jokes)
+            {
+                <MudCard Square="true" Outlined="true">
+                    <MudCardContent>
+                        <MudText Typo="Typo.h6" Align="Align.Center">@jokeViewModel.Punchline</MudText>
+                        <MudText Typo="Typo.body2" Align="Align.Center">@jokeViewModel.Category</MudText>
+                    </MudCardContent>
+                </MudCard>
+            }
+        </MudStack>
     }
 </div>
 
-<MudButton @onclick="Send">Send a Laugh</MudButton>
+<MudButton @onclick="Send" FullWidth="true">Send a Laugh</MudButton>
