@@ -7,9 +7,13 @@ namespace Joxes.Delivery;
 
 public class Punchlines : IPunchlines
 {
-    public Punchlines(IHttpClientFactory httpClientFactory, IJsonSerializer jsonSerializer, UserId userId)
+    public Punchlines(IHttpClientFactory httpClientFactory,
+                      IJsonSerializer jsonSerializer,
+                      IJokeBroadcast jokeBroadcast,
+                      UserId userId)
     {
         _jsonSerializer = jsonSerializer;
+        _jokeBroadcast = jokeBroadcast;
         _userId = userId;
         _httpClient = httpClientFactory
             .CreateClient("Functions");
@@ -22,9 +26,9 @@ public class Punchlines : IPunchlines
     {
         var serialize = _jsonSerializer.Serialize(new JokeRequest(_userId, categories));
         return Observable.FromAsync(token => _httpClient
-                                             .PostAsync("api/DeliveryFunction",
-                                                        new StringContent(serialize),
-                                                        token))
+                                        .PostAsync("api/DeliveryFunction",
+                                                   new StringContent(serialize),
+                                                   token))
                          // HACK: [rlittlesii: March 11, 2023] This is ugly
                          .Select(_ =>
                          {
@@ -32,16 +36,20 @@ public class Punchlines : IPunchlines
                              {
                                  Observable.Empty<JokeResponse>();
                              }
-                             return _jsonSerializer.Deserialize<JokeResponse>(_.Content.ReadAsStringAsync()
-                                                                               .GetAwaiter()
-                                                                               .GetResult());
+
+                             var result = _.Content.ReadAsStringAsync()
+                                           .GetAwaiter()
+                                           .GetResult();
+
+                             return _jsonSerializer.Deserialize<JokeResponse>(result);
                          })
-                         .Do(response => _responseCache.AddOrUpdate(response))
                          // TODO: [rlittlesii: March 11, 2023] I should likely handle the exceptions from the api.
-                         .Select(_ => Unit.Default);
+                         .Do(response => _responseCache.AddOrUpdate(response))
+                         .SelectMany(jokeResponse => _jokeBroadcast.Broadcast(jokeResponse));
     }
 
     private readonly IJsonSerializer _jsonSerializer;
+    private readonly IJokeBroadcast _jokeBroadcast;
     private readonly UserId _userId;
     private readonly HttpClient _httpClient;
     private readonly SourceCache<JokeResponse, CorrelationId> _responseCache;

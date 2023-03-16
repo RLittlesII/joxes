@@ -19,7 +19,7 @@ public class ChuckNorrisJokes : IChuckNorrisJokes
             .RefCount()
             .Transform(joke => joke.Categories)
             .ToCollection()
-            .SelectMany(collection => Enumerable.SelectMany<IReadOnlyList<Category>, Category>(collection, list => list))
+            .SelectMany(collection => collection.SelectMany(list => list))
             .ToObservableChangeSet(category => category.Value)
             .PopulateInto(_categories);
     }

@@ -1,12 +1,10 @@
 using System.Net;
-using System.Reactive.Threading.Tasks;
 using Joxes;
 using Joxes.Serialization;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Rocket.Surgery.Airframe.Data;
 
 namespace Punchline;
 
@@ -32,17 +30,17 @@ public class DeliveryFunction
                          .InstanceServices
                          .GetService<IJsonSerializer>()!;
 
-        var requestBody = serializer.Deserialize<JokeRequest>(requestAsString);
+        var jokeRequest = DeserializrJokeRequest(serializer, requestAsString);
 
-        if (requestBody == null)
+        if (jokeRequest == null)
         {
             return req.CreateResponse(HttpStatusCode.UnprocessableEntity);
         }
 
         var category =
-            requestBody
+            jokeRequest
                 .Categories
-                .OrderBy(_ => _random.Next())
+                .OrderBy(_ => Random.Next())
                 .ToArray()[0]
                 .Value;
 
@@ -50,11 +48,11 @@ public class DeliveryFunction
         var jokeResult =
             await executionContext
                   .InstanceServices
-                  .GetService<IChuckNorrisApiContract>()
+                  .GetService<IChuckNorrisApiContract>()!
                   .RandomFromCategory(category);
 
         // TODO: [rlittlesii: March 11, 2023] send SignalR signal
-        var jokeResponse = new JokeResponse(requestBody.Id, requestBody.UserId, jokeResult, DateTimeOffset.UtcNow);
+        var jokeResponse = new JokeResponse(jokeRequest.Id, jokeRequest.UserId, jokeResult, DateTimeOffset.UtcNow);
 
         var response = req.CreateResponse(HttpStatusCode.OK);
         response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
@@ -64,5 +62,26 @@ public class DeliveryFunction
         return response;
     }
 
-    private readonly static Random _random = new Random();
+    private static JokeRequest? DeserializrJokeRequest(IJsonSerializer serializer, string? requestAsString)
+    {
+        return serializer.Deserialize<JokeRequest>(requestAsString);
+    }
+    //
+    // [SignalROutput(HubName = "punchline", ConnectionStringSetting = "SignalRConnection")]
+    // [Function(nameof(PunchlineDeliveryFunction))]
+    // public static SignalRMessageAction PunchlineDeliveryFunction(
+    //     [SignalRTrigger("punchline", "norris", nameof(PunchlineDeliveryFunction))]
+    //     SignalRInvocationContext context)
+    // {
+    //     return new SignalRMessageAction("Punchline")
+    //            {
+    //                // broadcast to all the connected clients without specifying any connection, user or group.
+    //                Arguments = new object[]
+    //                            {
+    //                                new NorrisJoke()
+    //                            },
+    //            };
+    // }
+
+    private static readonly Random Random = new();
 }

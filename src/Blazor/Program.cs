@@ -1,28 +1,44 @@
 using Joxes;
+using Joxes.Blazor;
 using Joxes.Blazor.Data;
 using Joxes.Blazor.Pages.Chuck;
 using Joxes.Delivery;
 using Joxes.Serialization;
+using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.Azure.SignalR;
 using MudBlazor.Services;
 using Refit;
 using Rocket.Surgery.Airframe.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSignalR();
+builder.Services
+       .AddSignalR()
+       .AddAzureSignalR(thing => thing.Endpoints = new ServiceEndpoint[]
+                                                   {
+                                                       new(
+                                                           "Endpoint=https://punchline.service.signalr.net;AccessKey=oSN4ibHqW4MvcecjRt39kLPhWc3rqUe9fQRPaRLENzs=;Version=1.0;")
+                                                   });
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddMudServices();
 builder.Services
        .AddSingleton<WeatherForecastService>()
-       .AddSingleton<IChuckNorrisJokeApiClient>(provider => RestService.For<IChuckNorrisJokeApiClient>("https://api.chucknorris.io/"))
+       .AddSingleton<IChuckNorrisJokeApiClient>(
+           provider => RestService.For<IChuckNorrisJokeApiClient>("https://api.chucknorris.io/"))
        .AddSingleton<IChuckNorrisJokeService, ChuckNorrisJokeService>()
        .AddSingleton<IChuckNorrisJokes, ChuckNorrisJokes>()
        .AddTransient<ChuckNorrisViewModel>()
        .AddTransient<UserId>()
-       .AddTransient<IJsonSerializer, Serializer>()
+       .AddSingleton<IJsonSerializer, Serializer>()
        .AddTransient<IPunchlines, Punchlines>()
+       // .AddSingleton<IHubConnectionBuilder>(provider => new HubConnectionBuilder()
+       //                                                  .WithUrl("https://punchline.service.signalr.net")
+       //                                                  .ConfigureLogging(
+       //                                                      loggingBuilder => loggingBuilder.AddConsole()))
+       // .AddSingleton<IHubClient<JokeResponse>, SignalRHubClient<JokeResponse>>()
+       .AddSingleton<IJokeBroadcast, JokeBroadcast>()
        .AddHttpClient("Functions", client => client.BaseAddress = new Uri(" http://localhost:7071/api"));
 
 var app = builder.Build();
@@ -41,6 +57,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.MapHub<JokeHub>("/jokes");
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 
