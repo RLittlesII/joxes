@@ -10,11 +10,11 @@ public class ChuckNorrisJokes : IChuckNorrisJokes
     {
         _apiClient = apiClient;
 
-        _jokes = new SourceCache<Joke, Guid>(joke => joke.Id);
+        SourceCache<Joke, Guid> jokes = new(joke => joke.Id);
 
         _categories = new SourceCache<Category, string>(category => category.Value);
 
-        _jokes
+        jokes
             .Connect()
             .RefCount()
             .Transform(joke => joke.Categories)
@@ -49,6 +49,5 @@ public class ChuckNorrisJokes : IChuckNorrisJokes
             .Cache(_categories, true);
 
     private readonly IChuckNorrisJokeApiClient _apiClient;
-    private readonly SourceCache<Joke, Guid> _jokes;
-    private SourceCache<Category, string> _categories;
+    private readonly SourceCache<Category, string> _categories;
 }

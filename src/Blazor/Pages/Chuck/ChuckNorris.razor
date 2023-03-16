@@ -16,7 +16,7 @@
     }
 </div>
 <div class="row">
-    @if (ViewModel?.Jokes.Any() ?? false)
+    @if (ViewModel?.Jokes?.Any() ?? false)
     {
         <MudStack Justify="Justify.Center">
             @foreach (var jokeViewModel in ViewModel.Jokes)

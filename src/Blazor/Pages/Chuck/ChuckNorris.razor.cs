@@ -9,7 +9,7 @@ public partial class ChuckNorris
     public ChuckNorris() =>
         this.WhenAnyObservable(x => x.ViewModel.Changed)
             .Throttle(TimeSpan.FromMilliseconds(500))
-            .Subscribe(_ => InvokeAsync(() => StateHasChanged()));
+            .Subscribe(_ => InvokeAsync(StateHasChanged));
 
     protected override void OnInitialized() => ViewModel = _viewModel;
 

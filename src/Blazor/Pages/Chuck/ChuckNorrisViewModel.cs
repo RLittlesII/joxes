@@ -1,4 +1,5 @@
 using System.Reactive;
+using System.Reactive.Linq;
 using DynamicData;
 using Joxes.Delivery;
 using ReactiveUI;
@@ -9,17 +10,15 @@ public class ChuckNorrisViewModel : ReactiveObject
 {
     public ChuckNorrisViewModel(IChuckNorrisJokes chuckNorrisJokes, IPunchlines punchlines, UserId userId)
     {
-        this.UserId = userId;
+        UserId = userId;
         Send = ReactiveCommand.CreateFromObservable(() => punchlines.Deliver(
                                                         new Categories(Categories.Where(x => !x.Excluded)
                                                                                  .Select(x => x.Category))));
 
-        Send
-            .Subscribe(_ => { });
-
         punchlines
-            .Transform(x => new DeliveredJokeViewModel(x))
+            .Transform(response => new DeliveredJokeViewModel(response))
             .ToCollection()
+            .Do(_ => { })
             .BindTo(this, x => x.Jokes);
 
         chuckNorrisJokes
@@ -28,6 +27,7 @@ public class ChuckNorrisViewModel : ReactiveObject
             .Transform(x => new CategorySelection(x))
             .AutoRefresh(categorySelection => categorySelection.Excluded)
             .ToCollection()
+            .Do(_ => { })
             .BindTo(this, x => x.Categories);
     }
 
