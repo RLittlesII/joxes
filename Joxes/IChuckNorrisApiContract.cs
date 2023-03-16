@@ -1,7 +1,6 @@
-using Joxes;
 using Refit;
 
-namespace Punchline;
+namespace Joxes;
 
 public interface IChuckNorrisApiContract
 {

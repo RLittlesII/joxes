@@ -26,19 +26,15 @@ builder.Services
        .AddSingleton<WeatherForecastService>()
        .AddSingleton<IChuckNorrisJokeApiClient>(
            _ => RestService.For<IChuckNorrisJokeApiClient>("https://api.chucknorris.io/"))
+       .AddSingleton<IChuckNorrisApiContract>(
+           _ => RestService.For<IChuckNorrisApiContract>("https://api.chucknorris.io/"))
        .AddSingleton<IChuckNorrisJokeService, ChuckNorrisJokeService>()
        .AddSingleton<IChuckNorrisJokes, ChuckNorrisJokes>()
        .AddTransient<ChuckNorrisViewModel>()
        .AddTransient<UserId>()
        .AddSingleton<IJsonSerializer, Serializer>()
        .AddTransient<IPunchlines, Punchlines>()
-       // .AddSingleton<IHubConnectionBuilder>(provider => new HubConnectionBuilder()
-       //                                                  .WithUrl("https://punchline.service.signalr.net")
-       //                                                  .ConfigureLogging(
-       //                                                      loggingBuilder => loggingBuilder.AddConsole()))
-       // .AddSingleton<IHubClient<JokeResponse>, SignalRHubClient<JokeResponse>>()
-       .AddSingleton<IJokeBroadcast, JokeBroadcast>()
-       .AddHttpClient("Functions", client => client.BaseAddress = new Uri(" http://localhost:7071/api"));
+       .AddSingleton<IJokeBroadcast, JokeBroadcast>();
 
 var app = builder.Build();
 

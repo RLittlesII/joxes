@@ -7,7 +7,7 @@ namespace Joxes.Delivery;
 
 public class Punchlines : IPunchlines
 {
-    public Punchlines(IHttpClientFactory httpClientFactory,
+    public Punchlines(IChuckNorrisApiContract chuckNorrisApiContract,
                       IJsonSerializer jsonSerializer,
                       IJokeBroadcast jokeBroadcast,
                       UserId userId)
@@ -15,9 +15,7 @@ public class Punchlines : IPunchlines
         _jsonSerializer = jsonSerializer;
         _jokeBroadcast = jokeBroadcast;
         _userId = userId;
-        _httpClient = httpClientFactory
-            .CreateClient("Functions");
-
+        _chuckNorrisApiContract = chuckNorrisApiContract;
         _responseCache = new SourceCache<JokeResponse, CorrelationId>(x => x.Id);
         _responses = _responseCache
                      .Connect()
@@ -27,27 +25,15 @@ public class Punchlines : IPunchlines
     /// <inheritdoc />
     public IObservable<Unit> Deliver(Categories categories)
     {
-        var serialize = _jsonSerializer.Serialize(new JokeRequest(_userId, categories));
-        return Observable.FromAsync(token => _httpClient
-                                        .PostAsync("api/DeliveryFunction",
-                                                   new StringContent(serialize),
-                                                   token))
-                         // HACK: [rlittlesii: March 11, 2023] This is ugly
-                         .Select(_ =>
-                         {
-                             if (!_.IsSuccessStatusCode)
-                             {
-                                 Observable.Empty<JokeResponse>();
-                             }
-
-                             var result = _.Content.ReadAsStringAsync()
-                                           .GetAwaiter()
-                                           .GetResult();
-
-                             return _jsonSerializer.Deserialize<JokeResponse>(result);
-                         })
+        var jokeRequest = new JokeRequest(_userId, categories);
+        return Observable.FromAsync(_ =>
+                                        _chuckNorrisApiContract
+                                            .RandomFromCategory(jokeRequest.Categories.OrderBy(x => Random.Next())
+                                                                           .ToArray()[0]
+                                                                           .Value))
                          // TODO: [rlittlesii: March 11, 2023] I should likely handle the exceptions from the api.
-                         .Do(response => _responseCache.AddOrUpdate(response))
+                         .Select(dto => new JokeResponse(jokeRequest.Id, jokeRequest.UserId, dto, DateTimeOffset.Now))
+                         .Cache(_responseCache)
                          .SelectMany(jokeResponse => _jokeBroadcast.Broadcast(jokeResponse));
     }
 
@@ -55,15 +41,11 @@ public class Punchlines : IPunchlines
         _responses
             .Subscribe(observer);
 
+    private readonly IChuckNorrisApiContract _chuckNorrisApiContract;
     private readonly IJsonSerializer _jsonSerializer;
     private readonly IJokeBroadcast _jokeBroadcast;
     private readonly UserId _userId;
-    private readonly HttpClient _httpClient;
     private readonly SourceCache<JokeResponse, CorrelationId> _responseCache;
     private readonly IObservable<IChangeSet<JokeResponse, CorrelationId>> _responses;
-}
-
-public interface IPunchlines : IObservable<IChangeSet<JokeResponse, CorrelationId>>
-{
-    IObservable<Unit> Deliver(Categories categories);
+    private static readonly Random Random = new();
 }

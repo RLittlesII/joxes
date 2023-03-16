@@ -1,42 +1,41 @@
 using System.Reactive.Linq;
 using DynamicData;
-using Rocket.Surgery.Airframe.Data;
 
 namespace Joxes;
 
 public static class CacheFunctions
 {
     /// <summary>
-    /// Caches the list of <see cref="T"/>.
+    /// Caches the list of <see cref="TValue"/>.
     /// </summary>
     /// <param name="result">The result.</param>
     /// <param name="cache">The cache.</param>
     /// <param name="clearCache">A value determining whether to clear the cache.</param>
     /// <returns>A completion notification.</returns>
-    public static IObservable<IChangeSet<T, string>> Cache<T>(this IObservable<IEnumerable<T>> result,
-                                                              SourceCache<T, string> cache,
-                                                              bool clearCache)
-        => result
-           .Do(UpdateCache(cache, clearCache))
-           .Select(_ => cache.Connect()
-                             .RefCount())
-           .Switch();
+    public static IObservable<IChangeSet<TValue, TKey>> Cache<TKey, TValue>(this IObservable<IEnumerable<TValue>> result,
+                                                                            SourceCache<TValue, TKey> cache,
+                                                                            bool clearCache)
+        where TKey : notnull => result
+                             .Do(x => UpdateCache(cache, clearCache)(x))
+                             .Select(_ => cache.Connect()
+                                               .RefCount())
+                             .Switch();
 
     /// <summary>
-    /// Caches the list of <see cref="T"/>.
+    /// Caches the list of <see cref="TValue"/>.
     /// </summary>
     /// <param name="result">The result.</param>
     /// <param name="cache">The cache.</param>
     /// <returns>A completion notification.</returns>
-    public static IObservable<T> Cache<T>(this IObservable<T> result, SourceCache<T, string> cache)
-        where T : IHaveIdentifier<string> => result
+    public static IObservable<TValue> Cache<TKey, TValue>(this IObservable<TValue> result, SourceCache<TValue, TKey> cache)
+        where TKey : notnull => result
         .Do(x => Update(x, cache));
 
-    private static void Update<T>(T item, ISourceCache<T, string> cache)
-        where T : IHaveIdentifier<string> => cache.AddOrUpdate(item);
+    private static void Update<TKey, TValue>(TValue item, ISourceCache<TValue, TKey> cache)
+        where TKey : notnull => cache.AddOrUpdate(item);
 
-    private static Action<IEnumerable<T>> UpdateCache<T>(ISourceCache<T, string> cache, bool clearCache)
-        => results =>
+    private static Action<IEnumerable<TValue>> UpdateCache<TKey, TValue>(ISourceCache<TValue, TKey> cache, bool clearCache)
+        where TKey : notnull => results =>
         {
             if (clearCache)
             {

@@ -5,6 +5,16 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="DynamicData" Version="7.12.11" />
+        <PackageReference Include="LanguageExt.Core" Version="4.4.0" />
+        <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="7.0.4" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
+        <PackageReference Include="Refit" Version="5.2.4" />
+        <PackageReference Include="ReactiveMarbles.Mvvm" Version="1.0.46" />
+        <PackageReference Include="Rocket.Surgery.Airframe.Data" Version="0.10.1" />
+        <PackageReference Include="System.Reactive" Version="5.0.0" />
+    </ItemGroup>
     <ItemGroup Condition="'$(Configuration)' == 'Release'">
         <Compile Remove="**\*.Tests.cs" />
     </ItemGroup>
@@ -16,15 +26,6 @@
         <PackageReference Include="xunit" Version="2.4.2" />
         <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5" />
         <PackageReference Include="xunit.categories" Version="2.0.6" />
-    </ItemGroup>
-    <ItemGroup>
-        <PackageReference Include="DynamicData" Version="7.12.11" />
-        <PackageReference Include="LanguageExt.Core" Version="4.4.0" />
-        <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="7.0.4" />
-        <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
-        <PackageReference Include="ReactiveMarbles.Mvvm" Version="1.0.46" />
-        <PackageReference Include="Rocket.Surgery.Airframe.Data" Version="0.10.1" />
-        <PackageReference Include="System.Reactive" Version="5.0.0" />
     </ItemGroup>
 
 </Project>
